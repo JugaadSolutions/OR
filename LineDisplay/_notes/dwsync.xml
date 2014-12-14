@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="App.Config" local="130534907002814914" remote="130534905210000000" testing="0" />
+<file name="App.xaml" local="130350055920000000" remote="130350054110000000" testing="0" />
+<file name="App.xaml.cs" local="130350055920000000" remote="130350054110000000" testing="0" />
+<file name="Converters.cs" local="130356239700000000" remote="130356238860000000" testing="0" />
+<file name="DataAccess.cs" local="130534901564588121" remote="130534900910000000" testing="0" />
+<file name="LineDisplay.csproj" local="130534906682948821" remote="130534905210000000" testing="0" />
+<file name="LineDisplay.csproj.user" local="130350056040000000" remote="130350054110000000" testing="0" />
+<file name="Machine.cs" local="130457554640000000" remote="130457552850000000" testing="0" />
+<file name="MachineStatusDisplay.xaml" local="130364074120000000" remote="130364072880000000" testing="0" />
+<file name="MachineStatusDisplay.xaml.cs" local="130356081080000000" remote="130356079950000000" testing="0" />
+<file name="MainWindow.xaml" local="130356209600000000" remote="130356208800000000" testing="0" />
+<file name="MainWindow.xaml.cs" local="130431332940000000" remote="130431332070000000" testing="0" />
+<file name="MainWindow_input.cs" local="130431336140000000" remote="130431332070000000" testing="0" />
+<file name="MainWindow_tcpConnection.cs" local="130432184460000000" remote="130432182480000000" testing="0" />
+<file name="MainWindow_update.cs" local="130431322620000000" remote="130431319190000000" testing="0" />
+<file name="Model1.Designer.cs" local="130457567640000000" remote="130457565730000000" testing="0" />
+<file name="Model1.edmx" local="130457567640000000" remote="130457565730000000" testing="0" />
+<file name="Project.cs" local="130350063960000000" remote="130350062700000000" testing="0" />
+<file name="Session.cs" local="130350148780000000" remote="130350148600000000" testing="0" />
+<file name="Shift.cs" local="130350148800000000" remote="130350148600000000" testing="0" />
+<file name="Stop.cs" local="130431322660000000" remote="130431319190000000" testing="0" />
+</dwsync>

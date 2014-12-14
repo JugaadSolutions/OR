@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="IOR.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="IORStoreContainer">
+          <EntitySet Name="MachineGroups" EntityType="IOR.Store.MachineGroups" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="MachineInputs" EntityType="IOR.Store.MachineInputs" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Machines" EntityType="IOR.Store.Machines" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Sessions" EntityType="IOR.Store.Sessions" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Shifts" EntityType="IOR.Store.Shifts" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_dbo_Machines_dbo_MachineGroups_MachineGroupId" Association="IOR.Store.FK_dbo_Machines_dbo_MachineGroups_MachineGroupId">
+            <End Role="MachineGroups" EntitySet="MachineGroups" />
+            <End Role="Machines" EntitySet="Machines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Sessions_dbo_Shifts_Shift_Id" Association="IOR.Store.FK_dbo_Sessions_dbo_Shifts_Shift_Id">
+            <End Role="Shifts" EntitySet="Shifts" />
+            <End Role="Sessions" EntitySet="Sessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Shifts_dbo_Machines_Machine_Id" Association="IOR.Store.FK_dbo_Shifts_dbo_Machines_Machine_Id">
+            <End Role="Machines" EntitySet="Machines" />
+            <End Role="Shifts" EntitySet="Shifts" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="MachineGroups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="MachineInputs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MachineId" Type="int" Nullable="false" />
+          <Property Name="inputTimestamp" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Machines">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="MachineGroupId" Type="int" Nullable="false" />
+          <Property Name="TOS" Type="int" Nullable="false" />
+          <Property Name="Pulses" Type="int" Nullable="false" />
+          <Property Name="Pieces" Type="int" Nullable="false" />
+          <Property Name="Rmin" Type="float" Nullable="false" />
+          <Property Name="Rmax" Type="float" Nullable="false" />
+          <Property Name="Omin" Type="float" Nullable="false" />
+          <Property Name="Omax" Type="float" Nullable="false" />
+          <Property Name="Gmin" Type="float" Nullable="false" />
+          <Property Name="Gmax" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sessions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Start" Type="datetime" Nullable="false" />
+          <Property Name="End" Type="datetime" Nullable="false" />
+          <Property Name="Shift_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Shifts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Start" Type="datetime" Nullable="false" />
+          <Property Name="End" Type="datetime" Nullable="false" />
+          <Property Name="Machine_Id" Type="int" />
+        </EntityType>
+        <Association Name="FK_dbo_Machines_dbo_MachineGroups_MachineGroupId">
+          <End Role="MachineGroups" Type="IOR.Store.MachineGroups" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Machines" Type="IOR.Store.Machines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MachineGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Machines">
+              <PropertyRef Name="MachineGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Sessions_dbo_Shifts_Shift_Id">
+          <End Role="Shifts" Type="IOR.Store.Shifts" Multiplicity="0..1" />
+          <End Role="Sessions" Type="IOR.Store.Sessions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shifts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sessions">
+              <PropertyRef Name="Shift_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Shifts_dbo_Machines_Machine_Id">
+          <End Role="Machines" Type="IOR.Store.Machines" Multiplicity="0..1" />
+          <End Role="Shifts" Type="IOR.Store.Shifts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Machines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Shifts">
+              <PropertyRef Name="Machine_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="IOR" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="IOREntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MachineGroups" EntityType="IOR.MachineGroup" />
+          <EntitySet Name="MachineInputs" EntityType="IOR.MachineInput" />
+          <EntitySet Name="Machines" EntityType="IOR.Machine" />
+          <EntitySet Name="Sessions" EntityType="IOR.Session" />
+          <EntitySet Name="Shifts" EntityType="IOR.Shift" />
+          <AssociationSet Name="FK_dbo_Machines_dbo_MachineGroups_MachineGroupId" Association="IOR.FK_dbo_Machines_dbo_MachineGroups_MachineGroupId">
+            <End Role="MachineGroups" EntitySet="MachineGroups" />
+            <End Role="Machines" EntitySet="Machines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Shifts_dbo_Machines_Machine_Id" Association="IOR.FK_dbo_Shifts_dbo_Machines_Machine_Id">
+            <End Role="Machines" EntitySet="Machines" />
+            <End Role="Shifts" EntitySet="Shifts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Sessions_dbo_Shifts_Shift_Id" Association="IOR.FK_dbo_Sessions_dbo_Shifts_Shift_Id">
+            <End Role="Shifts" EntitySet="Shifts" />
+            <End Role="Sessions" EntitySet="Sessions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="MachineGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Machines" Relationship="IOR.FK_dbo_Machines_dbo_MachineGroups_MachineGroupId" FromRole="MachineGroups" ToRole="Machines" />
+        </EntityType>
+        <EntityType Name="MachineInput">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MachineId" Type="Int32" Nullable="false" />
+          <Property Name="inputTimestamp" Type="DateTime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Machine">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="MachineGroupId" Type="Int32" Nullable="false" />
+          <Property Name="TOS" Type="Int32" Nullable="false" />
+          <Property Name="Pulses" Type="Int32" Nullable="false" />
+          <Property Name="Pieces" Type="Int32" Nullable="false" />
+          <Property Name="Rmin" Type="Double" Nullable="false" />
+          <Property Name="Rmax" Type="Double" Nullable="false" />
+          <Property Name="Omin" Type="Double" Nullable="false" />
+          <Property Name="Omax" Type="Double" Nullable="false" />
+          <Property Name="Gmin" Type="Double" Nullable="false" />
+          <Property Name="Gmax" Type="Double" Nullable="false" />
+          <NavigationProperty Name="MachineGroup" Relationship="IOR.FK_dbo_Machines_dbo_MachineGroups_MachineGroupId" FromRole="Machines" ToRole="MachineGroups" />
+          <NavigationProperty Name="Shifts" Relationship="IOR.FK_dbo_Shifts_dbo_Machines_Machine_Id" FromRole="Machines" ToRole="Shifts" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Start" Type="DateTime" Nullable="false" />
+          <Property Name="End" Type="DateTime" Nullable="false" />
+          <Property Name="Shift_Id" Type="Int32" />
+          <NavigationProperty Name="Shift" Relationship="IOR.FK_dbo_Sessions_dbo_Shifts_Shift_Id" FromRole="Sessions" ToRole="Shifts" />
+        </EntityType>
+        <EntityType Name="Shift">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Start" Type="DateTime" Nullable="false" />
+          <Property Name="End" Type="DateTime" Nullable="false" />
+          <Property Name="Machine_Id" Type="Int32" />
+          <NavigationProperty Name="Machine" Relationship="IOR.FK_dbo_Shifts_dbo_Machines_Machine_Id" FromRole="Shifts" ToRole="Machines" />
+          <NavigationProperty Name="Sessions" Relationship="IOR.FK_dbo_Sessions_dbo_Shifts_Shift_Id" FromRole="Shifts" ToRole="Sessions" />
+        </EntityType>
+        <Association Name="FK_dbo_Machines_dbo_MachineGroups_MachineGroupId">
+          <End Role="MachineGroups" Type="IOR.MachineGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Machines" Type="IOR.Machine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MachineGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Machines">
+              <PropertyRef Name="MachineGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Shifts_dbo_Machines_Machine_Id">
+          <End Role="Machines" Type="IOR.Machine" Multiplicity="0..1" />
+          <End Role="Shifts" Type="IOR.Shift" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Machines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Shifts">
+              <PropertyRef Name="Machine_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Sessions_dbo_Shifts_Shift_Id">
+          <End Role="Shifts" Type="IOR.Shift" Multiplicity="0..1" />
+          <End Role="Sessions" Type="IOR.Session" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shifts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sessions">
+              <PropertyRef Name="Shift_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="IORStoreContainer" CdmEntityContainer="IOREntities">
+          <EntitySetMapping Name="MachineGroups"><EntityTypeMapping TypeName="IOR.MachineGroup"><MappingFragment StoreEntitySet="MachineGroups">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="MachineInputs"><EntityTypeMapping TypeName="IOR.MachineInput"><MappingFragment StoreEntitySet="MachineInputs">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="MachineId" ColumnName="MachineId" />
+            <ScalarProperty Name="inputTimestamp" ColumnName="inputTimestamp" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Machines"><EntityTypeMapping TypeName="IOR.Machine"><MappingFragment StoreEntitySet="Machines">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="MachineGroupId" ColumnName="MachineGroupId" />
+            <ScalarProperty Name="TOS" ColumnName="TOS" />
+            <ScalarProperty Name="Pulses" ColumnName="Pulses" />
+            <ScalarProperty Name="Pieces" ColumnName="Pieces" />
+            <ScalarProperty Name="Rmin" ColumnName="Rmin" />
+            <ScalarProperty Name="Rmax" ColumnName="Rmax" />
+            <ScalarProperty Name="Omin" ColumnName="Omin" />
+            <ScalarProperty Name="Omax" ColumnName="Omax" />
+            <ScalarProperty Name="Gmin" ColumnName="Gmin" />
+            <ScalarProperty Name="Gmax" ColumnName="Gmax" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Sessions"><EntityTypeMapping TypeName="IOR.Session"><MappingFragment StoreEntitySet="Sessions">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Start" ColumnName="Start" />
+            <ScalarProperty Name="End" ColumnName="End" />
+            <ScalarProperty Name="Shift_Id" ColumnName="Shift_Id" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Shifts"><EntityTypeMapping TypeName="IOR.Shift"><MappingFragment StoreEntitySet="Shifts">
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Start" ColumnName="Start" />
+            <ScalarProperty Name="End" ColumnName="End" />
+            <ScalarProperty Name="Machine_Id" ColumnName="Machine_Id" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="IOR.MachineGroup" Width="1.5" PointX="0.75" PointY="1.875" Height="1.4279589843750002" IsExpanded="true" />
+        <EntityTypeShape EntityType="IOR.MachineInput" Width="1.5" PointX="0.75" PointY="5.75" Height="1.4279589843749996" IsExpanded="true" />
+        <EntityTypeShape EntityType="IOR.Machine" Width="1.5" PointX="3" PointY="1" Height="3.2357796223958339" IsExpanded="true" />
+        <EntityTypeShape EntityType="IOR.Session" Width="1.5" PointX="7.5" PointY="1.625" Height="1.9210009765624996" IsExpanded="true" />
+        <EntityTypeShape EntityType="IOR.Shift" Width="1.5" PointX="5.25" PointY="1.5" Height="2.0853483072916656" IsExpanded="true" />
+        <AssociationConnector Association="IOR.FK_dbo_Machines_dbo_MachineGroups_MachineGroupId" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="2.5889794921875002" />
+          <ConnectorPoint PointX="3" PointY="2.5889794921875002" />
+        </AssociationConnector>
+        <AssociationConnector Association="IOR.FK_dbo_Shifts_dbo_Machines_Machine_Id" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="2.5426741536458328" />
+          <ConnectorPoint PointX="5.25" PointY="2.5426741536458328" />
+        </AssociationConnector>
+        <AssociationConnector Association="IOR.FK_dbo_Sessions_dbo_Shifts_Shift_Id" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="2.58550048828125" />
+          <ConnectorPoint PointX="7.5" PointY="2.58550048828125" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

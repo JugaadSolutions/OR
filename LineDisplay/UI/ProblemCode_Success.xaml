@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="LineDisplay.ProblemCode_Success"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+            >
+    <Grid>
+        <StackPanel  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Lime" Margin="20">
+            <TextBox Name="labelOffCode" Text=" " HorizontalAlignment="Center" FontSize="80" 
+                   HorizontalContentAlignment="Center" Margin="0,100,0,0" Background="Lime" 
+                     BorderBrush="Lime"/>
+
+            <TextBox Name="labelOffReason" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                               VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="80" 
+                     Margin="0,30,0,0" Background="Lime" BorderBrush="lime"/>
+
+
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>

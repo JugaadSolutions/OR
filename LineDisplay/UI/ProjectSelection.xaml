@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="LineDisplay.ProjectSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             MaxHeight="400" MaxWidth="800">
+    <Grid Background="BurlyWood">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Name="lableProjectMenu" Background="BurlyWood" HorizontalAlignment="Center" HorizontalContentAlignment="Center"  VerticalAlignment="Center"
+               VerticalContentAlignment="Center" Content="Project Slection" Foreground="White" MinWidth="500" FontSize="32"/>
+        <ListView Grid.Row="1" Name="listBoxMenuSelection"  SelectedIndex="0" ItemsSource="{Binding }" 
+                  SelectionChanged="listBoxMenuSelection_SelectionChanged" Background="White" FontSize="28" >
+         
+
+        </ListView>
+
+        <Label Grid.Row="2" Background="BurlyWood" Content="Select: + - Confirm: Enter" HorizontalAlignment="Center" 
+               Foreground="White" FontSize="32"/>
+
+    </Grid>
+</UserControl>

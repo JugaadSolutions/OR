@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="LineDisplay.ProblemCode_Failure"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              Background="Black">
+    <Grid>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Red" Margin="20">
+            <TextBox Name="labelOffCode" Text=" " HorizontalAlignment="Center" 
+                     FontSize="80" HorizontalContentAlignment="Center" Background="Red" Foreground="Black" 
+                     Margin="0,60,0,0" BorderBrush="Red"/>
+
+            <Label Content="Bad Error Code" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                               VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" FontSize="80" 
+                   Margin="0,20,0,0" BorderBrush="Red"/>
+
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>
