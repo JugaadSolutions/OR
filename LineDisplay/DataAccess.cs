@@ -71,6 +71,7 @@ namespace LineDisplay
             dr.Close();
             cmd.Dispose();
 
+            con.Close();
             return (String)dt.Rows[0][0];
         }
 
@@ -88,6 +89,7 @@ namespace LineDisplay
             dr.Close();
             cmd.Dispose();
 
+            con.Close();
             return Convert.ToInt32((String)dt.Rows[0][0]);
         }
 
@@ -105,6 +107,7 @@ namespace LineDisplay
             dr.Close();
             cmd.Dispose();
 
+            con.Close();
             return Convert.ToInt32((String)dt.Rows[0][0]);
         }
 
@@ -123,6 +126,7 @@ namespace LineDisplay
             cmd.Dispose();
             int status = Convert.ToInt32((String)dt.Rows[0][0]);
 
+            con.Close();
             return (MACHINE_STATUS)status;
         }
 
@@ -160,6 +164,8 @@ namespace LineDisplay
             mpIpD = (double)dt.Rows[0]["MPDuration"];
             stopCloseDuration = (double)dt.Rows[0]["StopCloseDuration"];
 
+            con.Close();
+
         }
 
 
@@ -180,6 +186,7 @@ namespace LineDisplay
             dr.Close();
             cmd.Dispose();
 
+            con.Close();
             return (int)dt.Rows[0][0];
 
         }
@@ -200,6 +207,8 @@ namespace LineDisplay
             dr.Close();
             cmd.Dispose();
 
+
+            con.Close();
             return Convert.ToInt32((String)dt.Rows[0][0]);
         }
 
@@ -225,6 +234,7 @@ namespace LineDisplay
              if (dt.Rows.Count == 0)
                  return null;
 
+             con.Close();
             return new Project((int)dt.Rows[0]["ID"],(String)dt.Rows[0]["Name"],
                 (double)dt.Rows[0]["CycleTime"]);
         }
@@ -390,7 +400,7 @@ namespace LineDisplay
             dt.Load(dr);
             dr.Close();
             cmd.Dispose();
-
+            con.Close();
             return (int)dt.Rows[0][0];
         }
 
@@ -664,10 +674,7 @@ namespace LineDisplay
             qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), machine,code);
             SqlCommand cmd = new SqlCommand(qry, con);
 
-            //cmd.ExecuteNonQuery();
-            //cmd.Dispose();
-
-            //qry = @"";
+            
             cmd = new SqlCommand(qry, con);
             SqlDataReader dr = cmd.ExecuteReader();
             DataTable dt = new DataTable();
@@ -907,6 +914,8 @@ namespace LineDisplay
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
+
+            con.Close();
         }
 
         public void CloseManpowerInput(int machineId)
