@@ -297,7 +297,7 @@ namespace LineDisplay
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 sessions.Add(new Session(shift, (int)dt.Rows[i]["id"],
-                    ((DateTime)dt.Rows[i]["Start"]).ToString(), ((DateTime)dt.Rows[i]["End"]).ToString()));
+                    ((DateTime)dt.Rows[i]["Start"]).ToString("yyyy-MM-dd HH:mm:ss"), ((DateTime)dt.Rows[i]["End"]).ToString("yyyy-MM-dd HH:mm:ss")));
             }
 
             con.Close();
@@ -329,7 +329,7 @@ namespace LineDisplay
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 Session s = new Session(shift, (int)dt.Rows[i]["Id"],
-                    ((DateTime)dt.Rows[i]["Start"]).ToString(), ((DateTime)dt.Rows[i]["End"]).ToString());
+                    ((DateTime)dt.Rows[i]["Start"]).ToString("yyyy-MM-dd HH:mm:ss"), ((DateTime)dt.Rows[i]["End"]).ToString("yyyy-MM-dd HH:mm:ss"));
                 s.Isbreak = true;
                 breaks.Add(s);
             }
@@ -439,7 +439,7 @@ namespace LineDisplay
             con.Dispose();
         }
 
-
+        #region STOPS
         public Stop getStop(int machine)
         {
             Stop s;
@@ -571,7 +571,7 @@ namespace LineDisplay
             con.Open();
             String qry = String.Empty;
             qry = @"update Stops set  status = '{1}',code = {2} where SlNo = {3}";
-            qry = String.Format(qry, stop.To.ToString(), stop.Status,stop.Code,stop.ID);
+            qry = String.Format(qry, stop.To.Value.ToString("yyyy-MM-dd HH:mm:ss"), stop.Status, stop.Code, stop.ID);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
@@ -608,18 +608,38 @@ namespace LineDisplay
             con.Close();
         }
 
-        public void updateOpenStops(int machineId)
+        public void updateOpenStops(int machineId )
         {
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} ";
-            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0,machineId);
+            qry = @"
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} ";
+            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0, machineId);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
             cmd.Dispose();
             con.Close();
+        }
+
+        public int updateOpenStops(int machineId, Shift currentShift)
+        {
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"Begin
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3}
+                   
+                    commit";
+            qry = String.Format(qry, currentShift.EndTime, "Closed", 0,machineId);
+            SqlCommand cmd = new SqlCommand(qry, con);
+
+            int result = cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            con.Close();
+
+            return result;
         }
 
         public void deleteOpenStops(int machineId)
@@ -635,6 +655,8 @@ namespace LineDisplay
             cmd.Dispose();
             con.Close();
         }
+
+        #endregion
         public String getProblem(int code, int type,int machine)
         {
             String problem = String.Empty;
@@ -700,6 +722,25 @@ namespace LineDisplay
             String qry = String.Empty;
             qry = @"update OFFs set [End]='{0}' ,[status] = 'CLOSED' where SlNo={1}";
             qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), slno);
+            SqlCommand cmd = new SqlCommand(qry, con);
+
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            con.Close();
+        }
+
+        public void updateOff(int slno,Shift currentShift, Shift nextShift)
+        {
+
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"Begin
+                    update OFFs set [End]='{0}' ,[status] = 'CLOSED' where SlNo={1} 
+                    insert into [OFFs]([Start],status,Machine_Id,Code) values('{2}','OPEN',{3},{2})
+                    select Top(1) SlNo from [OFFs] order by SlNo desc
+                    commit";
+            qry = String.Format(qry, currentShift.EndTime, slno);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();

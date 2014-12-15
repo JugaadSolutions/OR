@@ -189,7 +189,16 @@ namespace LineDisplay
                            {
                                machineStatusDisplay.SessionSmileyProblemGrid.Children.Clear();
                                machineStatusDisplay.textBoxSessionOR.Clear();
-                               uiState = UISTATE.STATUS;
+                               switch (machineStatus.Status)
+                               {
+                                   case MACHINE_STATUS.ACTIVE:
+                                       uiState = UISTATE.STATUS;
+                                       break;
+
+                                   case MACHINE_STATUS.UNDEFINED:
+                                       uiState = UISTATE.OFF;
+                                       break;
+                               }
                                updateTimer.Start();
                                return;
                            }
@@ -199,6 +208,11 @@ namespace LineDisplay
                                machineStatusDisplay.SessionSmileyProblemGrid.Children.Clear();
                                machineStatusDisplay.SessionSmileyProblemGrid.Children.Add(machineOff);
                                updateTimer.Start();
+                               machineStatusDisplay.textBoxTime.Text = DateTime.Now.ToString("HH:mm");
+
+                               machineStatusDisplay.textBoxTime1.Text = DateTime.Now.ToString("HH:mm");
+                               machineStatusDisplay.textBoxTime2.Text = DateTime.Now.ToString("HH:mm");
+
                                return;
                            }
 

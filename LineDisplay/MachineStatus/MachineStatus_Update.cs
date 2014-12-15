@@ -38,11 +38,11 @@ namespace LineDisplay
                         cycleTimer.Start();
 
                     }
-                   break;
+                    break;
 
                 case MACHINE_STATUS.SPEED_LOSS:
                     stopWatch.Stop();
-                    if (stopWatch.ElapsedMilliseconds > (tms/100) * 1000 * cycletime)
+                    if (stopWatch.ElapsedMilliseconds > (tms / 100) * 1000 * cycletime)
                     {
                         Status = MACHINE_STATUS.STOPPED;
                         currentStop.Status = "Open";
@@ -57,7 +57,7 @@ namespace LineDisplay
                 case MACHINE_STATUS.ACTIVE:
                 case MACHINE_STATUS.STOPPED:
 
-                   
+
 
                     if (inBreak() == true)
                     {
@@ -120,7 +120,7 @@ namespace LineDisplay
             {
                 if (curProject.ID != Project.ID)
                 {
-                    if(previousStatus != MACHINE_STATUS.NONE ) 
+                    if (previousStatus != MACHINE_STATUS.NONE)
                         Status = previousStatus;
                     cycletime = curProject.CycleTime;
                     Project = curProject;
@@ -147,7 +147,12 @@ namespace LineDisplay
 
 
 
-                dataAccess.updateOpenStops(MachineID);  //clear open stops
+                dataAccess.updateOpenStops(MachineID);
+
+
+
+
+
                 dataAccess.CloseManpowerInput(MachineID);   //close manpower
                 dataAccess.closeProjectSession(MachineID, Project.ID, CurrentShift.ID,
                     SessionActual - previousActual, SessionPlan - previousPlan);
@@ -168,22 +173,31 @@ namespace LineDisplay
                 CurrentShift.Sessions = dataAccess.getSessions(CurrentShift.ID, MachineID);
                 CurrentShift.Breaks = dataAccess.getBreaks(CurrentShift.ID, MachineID);
 
-              
-                previousStatus = MACHINE_STATUS.NONE;
-               
-                if (CurrentShift.IsActive)
-                {
-                     Status = MACHINE_STATUS.ACTIVE;
-                   
-                    updateOR();
-                }
-                else Status = MACHINE_STATUS.UNDEFINED;
 
+                previousStatus = MACHINE_STATUS.NONE;
+
+                if (Status != MACHINE_STATUS.OFF)
+                {
+                    if (CurrentShift.IsActive)
+                    {
+
+                        Status = MACHINE_STATUS.ACTIVE;
+
+
+
+                    }
+                    else Status = MACHINE_STATUS.UNDEFINED;
+                }
+
+                updateOR();
                 updateMachineParameters();
                 updateProject();
 
-               
-                result =  true;
+
+
+
+
+                result = true;
 
                 DateTime ts = DateTime.Now;
 
@@ -207,12 +221,12 @@ namespace LineDisplay
 
                 TimerStart();
             }
-            
+
             return result;
         }
 
 
-        bool  updateSession()
+        bool updateSession()
         {
             double rm, omin, omax, gmin, gmax;
             String n;
@@ -223,16 +237,16 @@ namespace LineDisplay
             {
                 dataAccess.updateProjectSession(MachineID, Project.ID, CurrentShift.ID,
                   SessionActual - previousActual, SessionPlan - previousPlan);
-                
 
-             
+
+
                 SessionActual = 0;
                 SessionPlan = 0;
                 previousPlan = 0;
                 previousActual = 0;
 
                 CurrentSession = s;
-                
+
                 updateMachineParameters();
                 updateProject();
 
@@ -257,74 +271,74 @@ namespace LineDisplay
                         curSessionStart = curSessionStart.AddDays(-1);
                 }
 
-       
+
                 updateOR();
 
-                result =  true;
+                result = true;
             }
-            
+
             return result;
         }
 
         DateTime? updatePlan()
         {
-            SessionPlan = dataAccess.getMaxSessionPlan(MachineID,curSessionStart.ToString("yyyy-MM-dd HH:mm:ss"),
+            SessionPlan = dataAccess.getMaxSessionPlan(MachineID, curSessionStart.ToString("yyyy-MM-dd HH:mm:ss"),
                     curSessionEnd.ToString("yyyy-MM-dd HH:mm:ss"));
             SessionPlan++;
-            
+
             ShiftPlan++;
-            
+
             cycletime = Project.CycleTime;
 
-            dataAccess.updatePlan(SessionPlan,MachineID);
+            dataAccess.updatePlan(SessionPlan, MachineID);
 
             updateOR();
 
             return DateTime.Now;
 
         }
-     
+
         public DateTime? updateActual()
         {
             DateTime from;
             DateTime to;
 
             cycleTimer.Stop();
-            if (Status == MACHINE_STATUS.OFF || (Status== MACHINE_STATUS.UNDEFINED)) return null;
+            if (Status == MACHINE_STATUS.OFF || (Status == MACHINE_STATUS.UNDEFINED)) return null;
             DateTime fromTs = DateTime.Parse(CurrentSession.StartTime);
 
-             DateTime toTs = DateTime.Parse(currentSession.EndTime);
+            DateTime toTs = DateTime.Parse(currentSession.EndTime);
 
-             if (fromTs.Day != toTs.Day)
-             {
-                 if (DateTime.Now.Hour == 0)
-                 {
-                     from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 1,
-                 fromTs.Hour, fromTs.Minute, fromTs.Second);
-                     to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-                 toTs.Hour, toTs.Minute, toTs.Second);
-                 }
-                 else
-                 {
-                     from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
-                 fromTs.Hour, fromTs.Minute, fromTs.Second);
-                     to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1,
-                 toTs.Hour, toTs.Minute, toTs.Second);
-                 }
-             }
-             else
-             {
-                 from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+            if (fromTs.Day != toTs.Day)
+            {
+                if (DateTime.Now.Hour == 0)
+                {
+                    from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day - 1,
                 fromTs.Hour, fromTs.Minute, fromTs.Second);
-                 to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+                    to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
                 toTs.Hour, toTs.Minute, toTs.Second);
-             }
+                }
+                else
+                {
+                    from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+                fromTs.Hour, fromTs.Minute, fromTs.Second);
+                    to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1,
+                toTs.Hour, toTs.Minute, toTs.Second);
+                }
+            }
+            else
+            {
+                from = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+               fromTs.Hour, fromTs.Minute, fromTs.Second);
+                to = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+               toTs.Hour, toTs.Minute, toTs.Second);
+            }
 
-                int mi = dataAccess.getMachineInputs(from, to, MachineID);
+            int mi = dataAccess.getMachineInputs(from, to, MachineID);
 
-                int pulseCount = dataAccess.getMachinePulseCount(MachineID);
+            int pulseCount = dataAccess.getMachinePulseCount(MachineID);
 
-            int actual = (int)System.Math.Floor( Convert.ToDouble(mi) / pulseCount);
+            int actual = (int)System.Math.Floor(Convert.ToDouble(mi) / pulseCount);
 
             if (actual == SessionActual)
                 return null;
@@ -332,21 +346,21 @@ namespace LineDisplay
             else
             {
                 ShiftActual += actual - SessionActual;
-                
+
                 SessionActual = actual;
-                
-                dataAccess.updateActual(SessionActual,MachineID);
-                if (Status == MACHINE_STATUS.STOPPED )
+
+                dataAccess.updateActual(SessionActual, MachineID);
+                if (Status == MACHINE_STATUS.STOPPED)
                 {
                     Status = MACHINE_STATUS.ACTIVE;
                     currentStop = null;
                     dataAccess.updateStop_To();
                 }
 
-                else if(  Status == MACHINE_STATUS.SPEED_LOSS)
+                else if (Status == MACHINE_STATUS.SPEED_LOSS)
                 {
                     Status = MACHINE_STATUS.ACTIVE;
-                    
+
                     currentStop = null;
                     stopWatch.Stop();
                     dataAccess.updateStop_ToSpeedLoss();
@@ -358,8 +372,8 @@ namespace LineDisplay
                     dataAccess.updateStop_To();
                 }
                 currentStop = null;
-                
-                cycleTimer.Interval = (Project.CycleTime ) * 1000;
+
+                cycleTimer.Interval = (Project.CycleTime) * 1000;
 
                 if (Status != MACHINE_STATUS.IN_BREAK)
                 {
@@ -369,7 +383,7 @@ namespace LineDisplay
                 return DateTime.Now;
             }
 
-            
+
 
         }
 
@@ -380,14 +394,14 @@ namespace LineDisplay
                 SessionOR = 0;
             else
             {
-                SessionOR = ((double)SessionActual / SessionPlan*100);
+                SessionOR = ((double)SessionActual / SessionPlan * 100);
             }
 
             if (ShiftPlan == 0)
                 ShiftOR = 0;
             else
             {
-                ShiftOR = ((double)ShiftActual / ShiftPlan*100);
+                ShiftOR = ((double)ShiftActual / ShiftPlan * 100);
             }
         }
 
@@ -395,29 +409,29 @@ namespace LineDisplay
         {
 
 
-         
-                int SlNo = dataAccess.HasMPInputOpen(MachineID, CurrentShift.ID, curShiftStart.ToString("yyyy-MM-dd HH:mm:ss"),
-                    curShiftEnd.ToString("yyyy-MM-dd HH:mm:ss"));
-                if (SlNo == 0)
-                {
-                    if ((DateTime.Now - curShiftStart).TotalMinutes > mpInputStartupDuration)
-                    {
-                        MPInput = dataAccess.InsertMPInput(MachineID, CurrentShift.ID);
-                    }
-                    else MPInput = 0;
-                }
-                else if (SlNo == -1)
-                {
 
-                    MPInput = 0;
-                }
-                else if (SlNo > 0)
+            int SlNo = dataAccess.HasMPInputOpen(MachineID, CurrentShift.ID, curShiftStart.ToString("yyyy-MM-dd HH:mm:ss"),
+                curShiftEnd.ToString("yyyy-MM-dd HH:mm:ss"));
+            if (SlNo == 0)
+            {
+                if ((DateTime.Now - curShiftStart).TotalMinutes > mpInputStartupDuration)
                 {
-                    MPInput = SlNo;
+                    MPInput = dataAccess.InsertMPInput(MachineID, CurrentShift.ID);
                 }
-            
+                else MPInput = 0;
+            }
+            else if (SlNo == -1)
+            {
+
+                MPInput = 0;
+            }
+            else if (SlNo > 0)
+            {
+                MPInput = SlNo;
+            }
+
         }
-            
+
 
 
     }

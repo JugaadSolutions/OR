@@ -22,7 +22,7 @@ namespace LineDisplay
         public bool Isbreak = false;
         public string StartTime
         {
-            get { return startTime.ToString(); }
+            get { return startTime.ToString("yyyy-MM-dd HH:mm:ss"); }
             set
             {
                 if (value == String.Empty) 
@@ -46,7 +46,7 @@ namespace LineDisplay
         DateTime endTime;
         public string EndTime
         {
-            get { return endTime.ToString(); }
+            get { return endTime.ToString("yyyy-MM-dd HH:mm:ss"); }
             set
             {
                 if (value == String.Empty)

@@ -269,7 +269,7 @@ namespace LineDisplay
 
         ShiftCollection Shifts;
 
-        int currentOff;
+        int currentOff = -1;
 
         int GroupID;
         int MachineID;
@@ -368,6 +368,8 @@ namespace LineDisplay
             cycleTimer.Stop();
             planTimer.Stop();
 
+            //TimerStop();
+
             currentOff = dataAccess.insertOff(MachineID, machineOffCode);
             dataAccess.updateOpenStops(MachineID);
             currentStop = null;
@@ -378,10 +380,16 @@ namespace LineDisplay
         public void SWITCH_ON()
         {
             dataAccess.updateOff(currentOff);
-            Status = MACHINE_STATUS.ACTIVE;
+            currentOff = -1;
+
+            if (CurrentShift.IsActive)
+            {
+                Status = MACHINE_STATUS.ACTIVE;
+            }
+            else Status = MACHINE_STATUS.UNDEFINED;
             planTimer.Start();
             cycleTimer.Start();
-
+            //TimerStart();
 
 
         }
