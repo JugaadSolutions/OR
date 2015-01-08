@@ -16,12 +16,16 @@ using System.Diagnostics;
 
 namespace LineDisplay
 {
+    public enum COMMAND { MACHINE_OFF = 0, CANCEL_MACHINE_OFF };
     public partial class MachineStatus
     {
 
         Timer tick;
         Timer cycleTimer;
         Timer planTimer;
+        
+
+        
 
         DateTime stopTs;
         public event EventHandler<StopInfo> CloseStopEvent;
@@ -40,11 +44,16 @@ namespace LineDisplay
             planTimer.Elapsed += planTimer_Elapsed;
             planTimer.AutoReset=false;
 
+           
+
        
         }
+
+     
         public void TimerStart()
         {
             tick.Start();
+            
             //if (Status != MACHINE_STATUS.IN_BREAK)
             //{
             //    if (Project != null && Project.CycleTime <= 0)
@@ -121,4 +130,13 @@ namespace LineDisplay
         }
 
     }
+
+    public class Command
+    {
+        public int SlNo {get;set;}
+        public COMMAND ID {get;set;}
+        public int Parmeters {get;set;}
+        public int Status {get;set;}
+    }
+
 }

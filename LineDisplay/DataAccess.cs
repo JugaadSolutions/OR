@@ -391,7 +391,7 @@ namespace LineDisplay
 
             String qry = String.Empty;
             qry = @"SELECT Count(*) from MachineInputs where [timestamp] >= '{0}' and
-                    [timestamp]<'{1}'  and Machine_Id = {2}";
+                    [timestamp]<'{1}'  and Machine_Id = {2} and valid = 1";
 
             qry = String.Format(qry, from.ToString("yyyy-MM-dd HH:mm:ss"), to.ToString("yyyy-MM-dd HH:mm:ss"), MachineID);
             SqlCommand cmd = new SqlCommand(qry, con);
@@ -773,14 +773,14 @@ namespace LineDisplay
             else return (String)dt.Rows[0][0];
         }
 
-        public void updateMachineInput( int machine, DateTime timestamp)
+        public void updateMachineInput( int machine, DateTime timestamp,int valid)
         {
 
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"insert into machineInputs(machine_id,timestamp) values({0},'{1}')";
-            qry = String.Format(qry, machine, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            qry = @"insert into machineInputs(machine_id,timestamp,valid) values({0},'{1}',{2})";
+            qry = String.Format(qry, machine, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), valid);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
@@ -999,6 +999,57 @@ namespace LineDisplay
                  
             }
             else return 0;
+        }
+
+        internal Command getCommand(int MachineID)
+        {
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            String qry = String.Empty;
+            qry = @"SELECT Top(1) * from Command where [Machine_ID] ={0} and 
+                     ExecutionTimestamp <= '{1}' and ExecutionTimestamp < '{2}' order by Timestamp desc ";
+
+            qry = String.Format(qry, MachineID, DateTime.Now.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddMinutes(1).ToString("yyyy-MM-dd HH:mm"));
+
+                
+            SqlCommand cmd = new SqlCommand(qry, con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+            dr.Close();
+            cmd.Dispose();
+
+            con.Close();
+
+            if (dt.Rows.Count <= 0) return null;
+            if (dt.Rows[0][0] == DBNull.Value) return null;
+
+            Command Command = new Command
+            {
+                SlNo = (int)dt.Rows[0]["SlNo"],
+                ID = (COMMAND)dt.Rows[0]["ID"],
+                Parmeters = (dt.Rows[0]["Parameters"] == DBNull.Value )? 0: Convert.ToInt32((string)dt.Rows[0]["Parameters"]),
+                Status = (int)dt.Rows[0]["Status"]
+            };
+
+
+            return Command;
+        }
+
+        internal void updateCommandStatus(Command cmd)
+        {
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"update Command set [Status]= {0} where SlNo= {1} ";
+            qry = String.Format(qry, cmd.Status,cmd.SlNo);
+            SqlCommand scmd = new SqlCommand(qry, con);
+
+            scmd.ExecuteNonQuery();
+
+            con.Close();
+            con.Dispose();
         }
     }
 }

@@ -24,6 +24,7 @@ namespace LineDisplay
     public partial class MainWindow : Window
     {
         Timer updateTimer;
+        Timer CommandTimer;
         MACHINE_STATUS prevMachineStatus;
         Stop currentStop;
         UISTATE prevUIState;
@@ -37,8 +38,7 @@ namespace LineDisplay
             updateTimer.AutoReset = false;
             updateTimer.Elapsed += new ElapsedEventHandler(updateTimer_Elapsed);
 
-            updateTimer.Start();
-
+            
             UITimer = new Timer(3000);
             UITimer.AutoReset = false;
             UITimer.Elapsed += new ElapsedEventHandler(UITimer_Elapsed);
@@ -50,6 +50,54 @@ namespace LineDisplay
             reconnect = new Timer(1000);
             reconnect.AutoReset = false;
             reconnect.Elapsed += reconnect_Elapsed;
+
+            CommandTimer = new Timer(3700);     //odd timeout to avoid clashes with other timers
+            CommandTimer.Elapsed += CommandTimer_Elapsed;
+            CommandTimer.AutoReset = false;
+
+            CommandTimer.Start();
+
+            updateTimer.Start();
+
+        }
+
+        void CommandTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            CommandTimer.Stop();
+
+            Command cmd = dataAccess.getCommand(Machine_Id);
+            if (cmd == null || cmd.Status == 2) //if no command or already processed
+            {
+                CommandTimer.Start();
+                return;
+            }
+                if (cmd.ID == COMMAND.MACHINE_OFF)
+            {
+                if (machineStatus.Status != MACHINE_STATUS.OFF && machineStatus.Status != MACHINE_STATUS.UNDEFINED)
+                {
+                    machineStatus.SWITCH_OFF(cmd.Parmeters);
+                    currentStop.ID = -1;
+                    currentStop.timeoutTimer.Stop();
+
+                    cmd.Status = 2;                 //indicate processed
+                    dataAccess.updateCommandStatus(cmd);
+                    uiState = UISTATE.OFF;
+                }
+            }
+            else if (cmd.ID == COMMAND.CANCEL_MACHINE_OFF)
+            {
+                if (machineStatus.Status == MACHINE_STATUS.OFF)
+                {
+                    currentStop.ID = -1;
+                    machineStatus.SWITCH_ON();
+                    cmd.Status = 2;                 //indicate processed
+                    dataAccess.updateCommandStatus(cmd);
+                    uiState = UISTATE.STATUS;
+                }
+            }
+
+            CommandTimer.Start();
+            return;
         }
 
         void reconnect_Elapsed(object sender, ElapsedEventArgs e)
@@ -153,7 +201,7 @@ namespace LineDisplay
                                {
                                    uiState = nextUIState;
                                    currentStop.ID = -1;
-                                     BaseGrid.Children.Clear();
+                                   BaseGrid.Children.Clear();
                                    BaseGrid.Children.Add(machineStatusDisplay);
 
                                    
@@ -207,12 +255,12 @@ namespace LineDisplay
                            {
                                machineStatusDisplay.SessionSmileyProblemGrid.Children.Clear();
                                machineStatusDisplay.SessionSmileyProblemGrid.Children.Add(machineOff);
-                               updateTimer.Start();
+                               
                                machineStatusDisplay.textBoxTime.Text = DateTime.Now.ToString("HH:mm");
 
                                machineStatusDisplay.textBoxTime1.Text = DateTime.Now.ToString("HH:mm");
                                machineStatusDisplay.textBoxTime2.Text = DateTime.Now.ToString("HH:mm");
-
+                               updateTimer.Start();
                                return;
                            }
 
@@ -425,9 +473,9 @@ namespace LineDisplay
             TimeSpan duration =ts - prevActualTs ;
            // if (duration.TotalSeconds < 75)
            //    return;
-            
-            
-            dataAccess.updateMachineInput( Machine_Id, ts);
+
+            int valid = (machineStatus.Status == MACHINE_STATUS.OFF) ? 0 : 1;
+            dataAccess.updateMachineInput( Machine_Id, ts,valid);
             machineStatus.updateActual();
             prevActualTs = ts;
         }

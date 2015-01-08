@@ -304,9 +304,6 @@ namespace LineDisplay
 
                                 nextUIState = UISTATE.OFF;
 
-                                
-
-
                             }
                         }
                         else if (machineStatus.Status == MACHINE_STATUS.OFF)
@@ -337,6 +334,14 @@ namespace LineDisplay
                                 BaseGrid.Children.Add(menu);
                                 prevUIState = uiState;
                                 uiState = UISTATE.MENU;
+                                break;
+
+                            case Key.F9:
+                                if (simulation == "Yes")
+                                {
+                                    updateInput();
+
+                                }
                                 break;
                         }
                         break;
