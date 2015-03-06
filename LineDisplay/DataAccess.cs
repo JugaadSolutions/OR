@@ -1010,7 +1010,7 @@ namespace LineDisplay
             qry = @"SELECT Top(1) * from Command where [Machine_ID] ={0} and 
                      ExecutionTimestamp <= '{1}' and ExecutionTimestamp < '{2}' order by Timestamp desc ";
 
-            qry = String.Format(qry, MachineID, DateTime.Now.ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddMinutes(1).ToString("yyyy-MM-dd HH:mm"));
+            qry = String.Format(qry, MachineID, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.AddMinutes(1).ToString("yyyy-MM-dd HH:mm:ss"));
 
                 
             SqlCommand cmd = new SqlCommand(qry, con);
