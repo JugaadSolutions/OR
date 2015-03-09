@@ -354,7 +354,7 @@ namespace LineDisplay
                 {
                     Status = MACHINE_STATUS.ACTIVE;
                     currentStop = null;
-                    dataAccess.updateStop_To();
+                    dataAccess.updateStop_To(MachineID);
                 }
 
                 else if (Status == MACHINE_STATUS.SPEED_LOSS)
@@ -363,13 +363,13 @@ namespace LineDisplay
 
                     currentStop = null;
                     stopWatch.Stop();
-                    dataAccess.updateStop_ToSpeedLoss();
+                    dataAccess.updateStop_ToSpeedLoss(MachineID);
                 }
 
                 else if (Status == MACHINE_STATUS.IN_BREAK)
                 {
                     previousStatus = MACHINE_STATUS.ACTIVE;
-                    dataAccess.updateStop_To();
+                    dataAccess.updateStop_To(MachineID);
                 }
                 currentStop = null;
 

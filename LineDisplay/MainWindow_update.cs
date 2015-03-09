@@ -484,7 +484,7 @@ namespace LineDisplay
         void updateStop(DateTime ts)
         {
             
-                dataAccess.updateStop_To();
+                dataAccess.updateStop_To(Machine_Id);
                 
          
         }

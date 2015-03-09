@@ -512,15 +512,15 @@ namespace LineDisplay
            
         }
 
-        public void updateStop_To()
+        public void updateStop_To(int machine)
         {
 
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"update Stops set [End] = GETDATE() where SlNo = (Select Top(1)SlNo from Stops where [End] is null and [Status]<>'Speed Loss'
+            qry = @"update Stops set [End] = GETDATE() where SlNo = (Select Top(1)SlNo from Stops where [End] is null and [Status]<>'Speed Loss' and Machine_Id = {0}
                         order by [Start] asc)";
-            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            qry = String.Format(qry, machine);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
@@ -529,15 +529,15 @@ namespace LineDisplay
         }
 
 
-        public void updateStop_ToSpeedLoss()
+        public void updateStop_ToSpeedLoss(int machine)
         {
 
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"update Stops set [End] = GETDATE() where SlNo = (Select Top(1)SlNo from Stops where [End] is null and [Status]='Speed Loss'
+            qry = @"update Stops set [End] = GETDATE() where SlNo = (Select Top(1)SlNo from Stops where [End] is null and [Status]='Speed Loss' and Machine_Id = {0}
                         order by [Start] asc)";
-            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            qry = String.Format(qry, machine);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             cmd.ExecuteNonQuery();
@@ -729,24 +729,7 @@ namespace LineDisplay
             con.Close();
         }
 
-        public void updateOff(int slno,Shift currentShift, Shift nextShift)
-        {
-
-            SqlConnection con = new SqlConnection(ConnectionString);
-            con.Open();
-            String qry = String.Empty;
-            qry = @"Begin
-                    update OFFs set [End]='{0}' ,[status] = 'CLOSED' where SlNo={1} 
-                    insert into [OFFs]([Start],status,Machine_Id,Code) values('{2}','OPEN',{3},{2})
-                    select Top(1) SlNo from [OFFs] order by SlNo desc
-                    commit";
-            qry = String.Format(qry, currentShift.EndTime, slno);
-            SqlCommand cmd = new SqlCommand(qry, con);
-
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-            con.Close();
-        }
+      
 
         public String getStopProblem(int code, int type,int machine)
         {
@@ -810,18 +793,6 @@ namespace LineDisplay
 
             cmd.ExecuteNonQuery();
 
-            //qry = String.Empty;
-            //qry = @"update ProjectMachines set Active='Yes' where Machine_Id = {0} and Project_id = {1}";
-            //qry = String.Format(qry, machine, cur);
-            //cmd = new SqlCommand(qry, con);
-            //cmd.ExecuteNonQuery();
-            //cmd.Dispose();
-
-            //qry = String.Empty;
-            //qry = @"')";
-            //qry = String.Format(qry, machine,session, cur,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            //cmd = new SqlCommand(qry, con);
-            //cmd.ExecuteNonQuery();
             cmd.Dispose();
 
             con.Close();
