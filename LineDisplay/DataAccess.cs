@@ -614,7 +614,22 @@ namespace LineDisplay
             con.Open();
             String qry = String.Empty;
             qry = @"
-                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} ";
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} and [End] is null";
+            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0, machineId);
+            SqlCommand cmd = new SqlCommand(qry, con);
+
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            con.Close();
+        }
+
+        public void updateOpenStops_Shift(int machineId)
+        {
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where Machine_Id={3} and [End] is null";
             qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0, machineId);
             SqlCommand cmd = new SqlCommand(qry, con);
 
@@ -629,7 +644,7 @@ namespace LineDisplay
             con.Open();
             String qry = String.Empty;
             qry = @"Begin
-                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3}
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} and [End] is null
                    
                     commit";
             qry = String.Format(qry, currentShift.EndTime, "Closed", 0,machineId);
