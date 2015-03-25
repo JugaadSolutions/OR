@@ -146,11 +146,8 @@ namespace LineDisplay
                 TimerStop();        //stop timers
 
 
-                if (CurrentShift.ID != -1)
-                {
-                    dataAccess.CloseStops(MachineID);
-                    dataAccess.updateOpenStops_Shift(MachineID);
-                }
+
+                dataAccess.updateOpenStops_Shift(MachineID);
 
 
 

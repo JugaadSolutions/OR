@@ -623,36 +623,33 @@ namespace LineDisplay
             con.Close();
         }
 
-        public int CloseStops(int machineId)
+        public void updateOpenStops_Shift(int machineId)
         {
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"
-                    update Stops set status = '{0}' where Machine_Id = {1} and [End] is not null and status='Open' 
-                   
-                    ";
-            qry = String.Format(qry, "Closed", machineId);
+            qry = @"Begin Tran
+                    update Stops set status = '{1}' where Machine_Id = {3} and [End] is not null
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where Machine_Id={3} and [End] is null
+                    commit";
+            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0, machineId);
             SqlCommand cmd = new SqlCommand(qry, con);
 
-            int result = cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
             cmd.Dispose();
             con.Close();
-
-            return result;
         }
 
-        public int updateOpenStops_Shift(int machineId)
+        public int updateOpenStops(int machineId, Shift currentShift)
         {
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"
-                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where 
-                    Machine_Id={3} and [End] is null
+            qry = @"Begin
+                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} and [End] is null
                    
-                    ";
-            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0, machineId);
+                    commit";
+            qry = String.Format(qry, currentShift.EndTime, "Closed", 0,machineId);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             int result = cmd.ExecuteNonQuery();
