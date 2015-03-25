@@ -353,23 +353,20 @@ namespace LineDisplay
                 if (Status == MACHINE_STATUS.STOPPED)
                 {
                     Status = MACHINE_STATUS.ACTIVE;
-                    currentStop = null;
-                    dataAccess.updateStop_To(MachineID);
+                    dataAccess.updateStop_To(currentStop);
                 }
 
                 else if (Status == MACHINE_STATUS.SPEED_LOSS)
                 {
                     Status = MACHINE_STATUS.ACTIVE;
-
-                    currentStop = null;
                     stopWatch.Stop();
-                    dataAccess.updateStop_ToSpeedLoss(MachineID);
+                    dataAccess.updateStop_ToSpeedLoss(currentStop);
                 }
 
                 else if (Status == MACHINE_STATUS.IN_BREAK)
                 {
                     previousStatus = MACHINE_STATUS.ACTIVE;
-                    dataAccess.updateStop_To(MachineID);
+                    dataAccess.updateStop_To(currentStop);
                 }
                 currentStop = null;
 
@@ -407,8 +404,6 @@ namespace LineDisplay
 
         public void updateManPower()
         {
-
-
 
             int SlNo = dataAccess.HasMPInputOpen(MachineID, CurrentShift.ID, curShiftStart.ToString("yyyy-MM-dd HH:mm:ss"),
                 curShiftEnd.ToString("yyyy-MM-dd HH:mm:ss"));

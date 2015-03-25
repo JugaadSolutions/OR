@@ -529,6 +529,22 @@ namespace LineDisplay
         }
 
 
+        public void updateStop_To(Stop currentStop)
+        {
+
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"update Stops set [End] = GETDATE() where SlNo = {0}";
+            qry = String.Format(qry, currentStop.ID);
+            SqlCommand cmd = new SqlCommand(qry, con);
+
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            con.Close();
+        }
+
+
         public void updateStop_ToSpeedLoss(int machine)
         {
 
@@ -546,13 +562,29 @@ namespace LineDisplay
         }
 
 
+        public void updateStop_ToSpeedLoss(Stop currentStop)
+        {
+
+            SqlConnection con = new SqlConnection(ConnectionString);
+            con.Open();
+            String qry = String.Empty;
+            qry = @"update Stops set [End] = GETDATE() where SlNo = {0}";
+            qry = String.Format(qry, currentStop.ID);
+            SqlCommand cmd = new SqlCommand(qry, con);
+
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+            con.Close();
+        }
+
+
         public void CloseStop(int id)
         {
 
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"update Stops set Code=0,[Status]='Closed' where SlNo = {0} and [Status]='Open'";
+            qry = @"update Stops set Code=0,[Status]='Undefined' where SlNo = {0} and [Status]='Open'";
             qry = String.Format(qry, id);
             qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             SqlCommand cmd = new SqlCommand(qry, con);
@@ -623,16 +655,17 @@ namespace LineDisplay
             con.Close();
         }
 
-        public int updateOpenStops(int machineId, Shift currentShift)
+        public int CloseOpenStops(int machineId)
         {
             SqlConnection con = new SqlConnection(ConnectionString);
             con.Open();
             String qry = String.Empty;
-            qry = @"Begin
-                    update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3}
-                   
-                    commit";
-            qry = String.Format(qry, currentShift.EndTime, "Closed", 0,machineId);
+            qry = @"
+                     update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Undefined' and Machine_Id={3} and [End] is null
+                     update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Open' and Machine_Id={3} and [End] is null 
+                     update Stops set [End]='{0}' ,  status = '{1}',code = {2} where status='Speed Loss' and Machine_Id={3} and [End] is null
+                    ";
+            qry = String.Format(qry, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "Closed", 0,machineId);
             SqlCommand cmd = new SqlCommand(qry, con);
 
             int result = cmd.ExecuteNonQuery();

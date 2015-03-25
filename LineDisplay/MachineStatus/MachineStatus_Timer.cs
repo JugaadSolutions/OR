@@ -92,7 +92,6 @@ namespace LineDisplay
             planTimer.Start();
         }
 
-
         void tick_Elapsed(object sender, ElapsedEventArgs e)
         {
             
@@ -100,8 +99,6 @@ namespace LineDisplay
 
             tick.Start();
         }
-
-
 
         void cycleTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
