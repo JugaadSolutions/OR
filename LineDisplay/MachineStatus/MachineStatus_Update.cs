@@ -147,7 +147,7 @@ namespace LineDisplay
 
 
 
-                dataAccess.updateOpenStops_Shift(MachineID);
+                dataAccess.updateOpenStops(MachineID);
 
 
 
